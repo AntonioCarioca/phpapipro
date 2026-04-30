@@ -1,8 +1,8 @@
 <?php
 return [
-    'connection' => 'mysql'
+    'connection' => 'mysql',
     'host' => 'mysql',
-    'port' => '3306'
+    'port' => '3306',
     'database' => 'api_pro',
     'username' => 'XxZeroxX',
     'password' => 'XxZero123xX',
