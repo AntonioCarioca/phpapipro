@@ -1,0 +1,17 @@
+{
+    "name": "antonio/php-rest-api-pro",
+    "description": "API REST profissional em PHP com PDO, JSON responses e CRUD de usuários.",
+    "type": "project",
+    "license": "MIT",
+    "require":
+    {
+        "php": "^8.1"
+    },
+    "autoload":
+    {
+        "psr-4":
+        {
+            "App\\": "app/"
+        }
+    }
+}
