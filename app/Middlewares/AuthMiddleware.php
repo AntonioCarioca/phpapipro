@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middlewares;
 
 use App\Response;
 
@@ -35,7 +35,7 @@ class AuthMiddleware
          * Define o token esperado.
          * Formato padrão: 'Bearer {token}'
          */
-        $expected = 'Bearer ' . ($_ENV['API_TOKEN'] ?? 'seu-token-secreto');
+        $expected = 'Bearer ' . ($_ENV['API_TOKEN'] ?? '123abc');
 
         // Verificação de segurança (Comparação estrita)
         if ($header !== $expected) {
