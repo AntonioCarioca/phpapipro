@@ -1,0 +1,132 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PHP REST API Pro",
+    "version": "1.0.0",
+    "description": "API de usuários desenvolvida em PHP"
+  },
+  "servers": [
+    {
+      "url": "https://phpapipro.dev.localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Gerenciamento de usuários"
+    }
+  ],
+  "paths": {
+    "/api/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Listar usuários",
+        "responses": {
+          "200": {
+            "description": "Lista de usuários"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "summary": "Criar usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado"
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Buscar usuário por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Atualizar usuário",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Deletar usuário",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserCreate": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" }
+        }
+      }
+    }
+  }
+}
