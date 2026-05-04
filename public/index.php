@@ -1,17 +1,38 @@
 <?php
 
+use App\Core\Env;
+use App\Core\Router;
+use App\Request;
+
+/**
+ * Entry Point da API (index.php).
+ * 
+ * Este arquivo é o "maestro" da aplicação. Todas as requisições HTTP 
+ * vindas do servidor (Apache/Nginx) obrigatoriamente passam por aqui.
+ */
+
+// 1. Inicializa o Autoload do Composer para carregar todas as classes automaticamente.
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\UserController;
-use App\Response;
+// 2. Carrega o arquivo de configuração de rotas específicas da API.
+$routes = require __DIR__ . '/../routes/api.php';
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$method = $_SERVER['REQUEST_METHOD'];
-$controller = new UserController();
+// 3. Carrega as variáveis de ambiente (DB_HOST, API_TOKEN, etc) do arquivo .env.
+Env::load(__DIR__ . '/../.env');
 
-if ($uri === '/api/users' && $method === 'GET') $controller->index();
-elseif (preg_match('#^/api/users/(\d+)$#', $uri, $m) && $method === 'GET') $controller->show((int)$m[1]);
-elseif ($uri === '/api/users' && $method === 'POST') $controller->store();
-elseif (preg_match('#^/api/users/(\d+)$#', $uri, $m) && $method === 'PUT') $controller->update((int)$m[1]);
-elseif (preg_match('#^/api/users/(\d+)$#', $uri, $m) && $method === 'DELETE') $controller->destroy((int)$m[1]);
-else Response::json(['success' => false, 'message' => 'Rota não encontrada'], 404);
+/**
+ * 4. Inicializa o Roteador passando as rotas disponíveis.
+ */
+$router = new Router($routes);
+
+/**
+ * 5. Captura a Requisição atual.
+ * O objeto Request encapsula o método HTTP, a URI e os dados (JSON/POST).
+ */
+$request = new Request();
+
+/**
+ * 6. Despacha a Requisição.
+ * O Router analisa o objeto $request e decide qual Controller/Método deve ser chamado.
+ */
+$router->dispatch($request);
