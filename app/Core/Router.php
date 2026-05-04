@@ -2,9 +2,6 @@
 
 namespace App\Core;
 
-use App\Request;
-use App\Response;
-
 /**
  * Motor de Roteamento Avançado.
  * 
