@@ -3,32 +3,46 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Middlewares\AuthMiddleware;
 use App\Response;
+use App\Request;
 
 /**
- * Controlador de Recursos de Usuário (API).
+ * Controlador de Recursos de Usuário (API RESTful).
  * 
- * Responsável por expor os endpoints de manipulação de usuários,
- * garantindo a validação de dados e retornando respostas em formato JSON.
+ * Implementa o padrão CRUD para a entidade de usuários, utilizando
+ * autenticação via Token Bearer e comunicação exclusivamente via JSON.
  * 
  * @package App\Controllers
  * @author XxZeroxX
- * @version 1.0.0
+ * @version 2.0.0
  */
 class UserController
 {
     /**
-     * Lista usuários com suporte a paginação.
+     * Endpoint de boas-vindas/status da API.
+     * @return void
+     */
+    public function home(): void
+    {
+        Response::json(['success' => true, 'message' => 'PHP REST API Pro']);
+        exit;
+    }
+
+    /**
+     * Lista todos os usuários com suporte a paginação.
      * 
-     * Captura parâmetros 'page' e 'per_page' via Query String.
+     * Protegido por AuthMiddleware. Aceita parâmetros 'page' e 'per_page' via URL.
      * 
      * @return void
      */
     public function index(): void
     {
-        // Garante que a página seja no mínimo 1
+        // Verifica o Token Bearer antes de processar a lógica
+        AuthMiddleware::check();
+
+        // Tratamento de parâmetros de query string para paginação segura
         $page = max(1, (int) ($_GET['page'] ?? 1));
-        // Limita a quantidade de itens por página entre 1 e 50 por segurança
         $perPage = max(1, min(50, (int) ($_GET['per_page'] ?? 10)));
 
         Response::json([
@@ -42,13 +56,16 @@ class UserController
     }
 
     /**
-     * Exibe os detalhes de um usuário específico.
+     * Busca um usuário pelo ID.
      * 
-     * @param int $id Identificador do usuário.
+     * @param Request $request Objeto injetado pelo Router.
+     * @param int $id Identificador vindo da URL dinâmica.
      * @return void
      */
-    public function show(int $id): void
+    public function show(Request $request, int $id): void
     {
+        AuthMiddleware::check();
+
         $user = User::find($id);
 
         if (! $user) {
@@ -60,41 +77,54 @@ class UserController
     }
 
     /**
-     * Cria um novo usuário.
+     * Cria um novo registro de usuário.
      * 
-     * Lê o corpo da requisição (JSON) e valida os campos obrigatórios.
+     * Recebe dados via JSON bruto no corpo da requisição.
      * 
+     * @param Request $request
      * @return void
      */
-    public function store(): void
+    public function store(Request $request): void
     {
-        // php://input permite ler dados brutos enviados via POST/PUT (JSON)
-        $data = json_decode(file_get_contents('php://input'), true) ?? [];
+        AuthMiddleware::check();
 
+        // Obtém os dados já decodificados (JSON ou POST) através da classe Request
+        $data = $request->input();
+
+        // Validação de integridade dos dados
         if (! $this->isValid($data)) {
             Response::json(['success' => false, 'message' => 'Dados inválidos.'], 422);
             return;
         }
 
         User::create($data);
-        Response::json(['success' => true, 'message' => 'Usuário criado com sucesso.'], 201);
+
+        // Retorna status 201 (Created) para indicar sucesso na persistência
+        Response::json([
+            'success' => true,
+            'message' => 'Usuário criado com sucesso.',
+            'data'    => $data,
+        ], 201);
     }
 
     /**
-     * Atualiza os dados de um usuário existente.
+     * Atualiza um usuário existente.
      * 
-     * @param int $id Identificador do usuário.
+     * @param Request $request
+     * @param int $id
      * @return void
      */
-    public function update(int $id): void
+    public function update(Request $request, int $id): void
     {
-        // Verifica existência antes de tentar atualizar
+        AuthMiddleware::check();
+
+        // Verifica se o recurso existe antes de tentar a edição
         if (! User::find($id)) {
             Response::json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
             return;
         }
 
-        $data = json_decode(file_get_contents('php://input'), true) ?? [];
+        $data = $request->input();
 
         if (! $this->isValid($data)) {
             Response::json(['success' => false, 'message' => 'Dados inválidos.'], 422);
@@ -102,17 +132,25 @@ class UserController
         }
 
         User::update($id, $data);
-        Response::json(['success' => true, 'message' => 'Usuário atualizado com sucesso.']);
+
+        Response::json([
+            'success' => true,
+            'message' => 'Usuário atualizado com sucesso.',
+            'data'    => $data,
+        ]);
     }
 
     /**
-     * Remove um usuário do sistema.
+     * Remove um usuário do banco de dados.
      * 
-     * @param int $id Identificador do usuário.
+     * @param Request $request
+     * @param int $id
      * @return void
      */
-    public function destroy(int $id): void
+    public function destroy(Request $request, int $id): void
     {
+        AuthMiddleware::check();
+        
         if (! User::find($id)) {
             Response::json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
             return;
@@ -123,10 +161,10 @@ class UserController
     }
 
     /**
-     * Valida os dados obrigatórios para criação e atualização.
+     * Helper interno para validação de campos obrigatórios.
      * 
-     * @param array $data Dados a serem validados.
-     * @return bool Retorna true se os dados forem válidos.
+     * @param array $data
+     * @return bool
      */
     private function isValid(array $data): bool
     {
