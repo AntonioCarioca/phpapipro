@@ -10,6 +10,11 @@
       "url": "https://phpapipro.dev.localhost"
     }
   ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "tags": [
     {
       "name": "Users",
@@ -126,6 +131,13 @@
           "name": { "type": "string" },
           "email": { "type": "string" }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Token"
       }
     }
   }
