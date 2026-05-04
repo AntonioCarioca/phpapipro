@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-use App\Response;
+use App\Core\Response;
 
 /**
  * Middleware de Autenticação via Token (API).

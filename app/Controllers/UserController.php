@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Middlewares\AuthMiddleware;
-use App\Response;
-use App\Request;
+use App\Core\Response;
+use App\Core\Request;
 
 /**
  * Controlador de Recursos de Usuário (API RESTful).

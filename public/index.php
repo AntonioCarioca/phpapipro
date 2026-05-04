@@ -2,7 +2,7 @@
 
 use App\Core\Env;
 use App\Core\Router;
-use App\Request;
+use App\Core\Request;
 
 /**
  * Entry Point da API (index.php).
