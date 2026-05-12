@@ -12,16 +12,13 @@ use PDO;
  * incluindo lógica de paginação, busca individual, criação, atualização e remoção.
  * 
  * @package App\Models
- * @author Seu Nome
- * @version 1.0.0
+ * @author XxZeroxX
+ * @version 1.0.1
  */
 class User
 {
     /**
      * Recupera uma lista paginada de usuários.
-     * 
-     * Ordena os resultados pelo ID de forma decrescente para exibir os 
-     * registros mais recentes primeiro.
      * 
      * @param int $page O número da página atual (inicia em 1).
      * @param int $perPage Quantidade de registros por página.
@@ -29,22 +26,11 @@ class User
      */
     public static function all(int $page = 1, int $perPage = 10): array
     {
-        /**
-         * Cálculo do Deslocamento (Offset):
-         * Se page=1 e perPage=10, offset = (1-1)*10 = 0.
-         * Se page=2 e perPage=10, offset = (2-1)*10 = 10.
-         */
         $offset = ($page - 1) * $perPage;
-        
         $pdo = Database::connect();
         
-        // Usamos Prepared Statements para evitar ataques de injeção
-        $stmt = $pdo->prepare('SELECT * FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset');
+        $stmt = $pdo->prepare('SELECT id, name, email FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset');
         
-        /**
-         * Importante: LIMIT e OFFSET precisam ser inteiros.
-         * O PDO::PARAM_INT garante que o banco trate o valor corretamente.
-         */
         $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -56,12 +42,12 @@ class User
      * Busca um usuário específico pelo ID.
      * 
      * @param int $id Identificador primário do usuário.
-     * @return array|null Dados do usuário ou null caso não seja encontrado.
+     * @return array|null Dados do usuário (sem senha) ou null.
      */
     public static function find(int $id): ?array
     {
         $pdo = Database::connect();
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = :id');
+        $stmt = $pdo->prepare('SELECT id, name, email FROM users WHERE id = :id LIMIT 1');
         $stmt->execute(['id' => $id]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,26 +55,46 @@ class User
     }
 
     /**
-     * Insere um novo usuário no banco de dados.
+     * Localiza um usuário pelo endereço de e-mail.
      * 
-     * @param array $data Mapa contendo as chaves 'name' e 'email'.
+     * Útil para validação de login e checagem de e-mails duplicados.
+     * 
+     * @param string $email E-mail do usuário.
+     * @return array|null Retorna os dados do usuário ou null.
+     */
+    public static function findByEmail(string $email): ?array
+    {
+        $pdo = Database::connect();
+        // Nota: Para o login, talvez você precise selecionar a 'password' aqui também.
+        $stmt = $pdo->prepare('SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: null;
+    }
+
+    /**
+     * Insere um novo usuário e criptografa a senha automaticamente.
+     * 
+     * @param array $data Mapa contendo 'name', 'email' e 'password'.
      * @return bool Sucesso ou falha na inserção.
      */
     public static function create(array $data): bool
     {
         $pdo = Database::connect();
-        $stmt = $pdo->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
+        $stmt = $pdo->prepare('INSERT INTO users (name, email, password) VALUES (:name, :email, :password)');
         
         return $stmt->execute([
-            'name'  => $data['name'], 
-            'email' => $data['email']
+            'name'     => $data['name'], 
+            'email'    => $data['email'],
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT)
         ]);
     }
 
     /**
-     * Atualiza os dados de um usuário existente.
+     * Atualiza os dados de nome e e-mail de um usuário.
      * 
-     * @param int $id ID do usuário a ser editado.
+     * @param int $id ID do usuário.
      * @param array $data Novos dados ('name' e 'email').
      * @return bool Sucesso ou falha na atualização.
      */
@@ -105,7 +111,7 @@ class User
     }
 
     /**
-     * Remove um usuário permanentemente do sistema.
+     * Remove um usuário permanentemente.
      * 
      * @param int $id ID do registro.
      * @return bool Sucesso ou falha na exclusão.
