@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Middlewares\AuthMiddleware;
+use App\Middlewares\JwtMiddleware;
 use App\Core\Response;
 use App\Core\Request;
 
@@ -39,7 +39,7 @@ class UserController
     public function index(): void
     {
         // Verifica o Token Bearer antes de processar a lógica
-        AuthMiddleware::check();
+        JwtMiddleware::handle();
 
         // Tratamento de parâmetros de query string para paginação segura
         $page = max(1, (int) ($_GET['page'] ?? 1));
@@ -64,7 +64,7 @@ class UserController
      */
     public function show(Request $request, int $id): void
     {
-        AuthMiddleware::check();
+        JwtMiddleware::handle();
 
         $user = User::find($id);
 
@@ -86,7 +86,7 @@ class UserController
      */
     public function store(Request $request): void
     {
-        AuthMiddleware::check();
+        JwtMiddleware::handle();
 
         // Obtém os dados já decodificados (JSON ou POST) através da classe Request
         $data = $request->input();
@@ -116,7 +116,7 @@ class UserController
      */
     public function update(Request $request, int $id): void
     {
-        AuthMiddleware::check();
+        JwtMiddleware::handle();
 
         // Verifica se o recurso existe antes de tentar a edição
         if (! User::find($id)) {
@@ -149,7 +149,7 @@ class UserController
      */
     public function destroy(Request $request, int $id): void
     {
-        AuthMiddleware::check();
+        JwtMiddleware::handle();
         
         if (! User::find($id)) {
             Response::json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
