@@ -4,89 +4,82 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Services\JwtService;
+use App\Core\Response;
+use App\Core\Request;
 
 /**
  * Controlador de Autenticação via API.
  * 
- * Este controlador gerencia a troca de credenciais (e-mail/senha) por 
- * um token de acesso seguro (JWT).
+ * Gerencia o ciclo de vida da autenticação stateless, transformando 
+ * credenciais válidas em tokens JWT assinados.
  * 
  * @package App\Controllers
  * @author XxZeroxX
- * @version 1.0.0
+ * @version 1.0.1
  */
 class AuthController
 {
     /**
-     * Realiza o login do usuário e retorna um Token JWT.
+     * Endpoint de Autenticação (Login).
      * 
-     * Fluxo: 
-     * 1. Valida a presença dos campos.
-     * 2. Busca o usuário no banco.
-     * 3. Verifica a senha criptografada.
-     * 4. Gera e retorna o token em caso de sucesso.
+     * Recebe e-mail e senha, valida as credenciais contra o hash no banco 
+     * de dados e retorna um token de acesso para uso em rotas protegidas.
      * 
+     * @param Request $request Objeto de requisição injetado automaticamente pelo Router.
      * @return void
      */
-    public function login(): void
+    public function login(Request $request): void
     {
-        // Define o tipo de conteúdo como JSON
-        header('Content-Type: application/json');
-
-        // Captura o input JSON do corpo da requisição (Raw body)
-        $data = json_decode(
-            file_get_contents("php://input"),
-            true
-        );
+        /**
+         * 1. Coleta de Dados:
+         * O método input() abstrai se os dados vieram via JSON ou POST clássico.
+         */
+        $data = $request->input();
 
         /**
-         * Validação de Campos (422 Unprocessable Entity):
-         * Verifica se as chaves necessárias existem e não estão vazias.
+         * 2. Validação de Presença (HTTP 422):
+         * Garante que a requisição contém o mínimo necessário para processar.
          */
-        if (
-            empty($data['email']) ||
-            empty($data['password'])
-        ) {
-            http_response_code(422);
-            echo json_encode([
-                'success' => false,
+        if (empty($data['email']) || empty($data['password'])) {
+            Response::json([
+                'success' => false, 
                 'message' => 'Email e senha obrigatórios'
-            ]);
+            ], 422);
             return;
         }
 
+        /**
+         * 3. Busca e Verificação:
+         * Instancia o Model e busca o usuário pelo e-mail fornecido.
+         */
         $userModel = new User();
         $user = $userModel->findByEmail($data['email']);
 
         /**
-         * Verificação de Segurança (401 Unauthorized):
-         * Usamos password_verify para comparar o texto puro com o hash do banco.
-         * Importante: Usamos a mesma mensagem para usuário inexistente ou senha errada
-         * para evitar "enumeração de usuários".
+         * 4. Validação de Segurança (HTTP 401):
+         * Se o usuário não existir ou o password_verify falhar, retornamos 
+         * um erro genérico para dificultar ataques de força bruta.
          */
-        if (
-            !$user ||
-            !password_verify(
-                $data['password'],
-                $user['password'] // O hash deve estar na coluna 'password' do banco
-            )
-        ) {
-            http_response_code(401);
-            echo json_encode([
-                'success' => false,
+        if (!$user || !password_verify($data['password'], $user['password'])) {
+            Response::json([
+                'success' => false, 
                 'message' => 'Credenciais inválidas'
-            ]);
+            ], 401);
             return;
         }
 
         /**
-         * Geração do Token:
-         * O JwtService assina os dados do usuário, criando uma sessão stateless.
+         * 5. Emissão do Token (JWT):
+         * Com as credenciais confirmadas, geramos a assinatura digital que 
+         * identifica o usuário nas próximas requisições (Stateless).
          */
         $token = JwtService::generate($user);
 
-        // Resposta de sucesso (200 OK por padrão)
-        echo json_encode([
+        /**
+         * 6. Resposta Final (HTTP 200):
+         * Retornamos o token e dados básicos (não sensíveis) do usuário.
+         */
+        Response::json([
             'success' => true,
             'token'   => $token,
             'user'    => [
