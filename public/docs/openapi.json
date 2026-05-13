@@ -19,6 +19,10 @@
     {
       "name": "Users",
       "description": "Gerenciamento de usuários"
+    },
+    {
+      "name": "Auth",
+      "description": "Gerenciamento de usuários"
     }
   ],
   "paths": {
@@ -113,6 +117,32 @@
           }
         }
       }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login do usuário",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              },
+              "example": {
+                "email": "admin@email.com",
+                "password": "123456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JWT Token"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -132,13 +162,21 @@
           "name": { "type": "string" },
           "email": { "type": "string" }
         }
+      },
+      "Login": {
+        "type": "object",
+        "required": ["name", "password"],
+        "properties": {
+          "name": { "type": "string" },
+          "password": { "type": "string" }
+        }
       }
     },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "Token"
+        "bearerFormat": "JWT"
       }
     }
   }
