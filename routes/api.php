@@ -11,5 +11,5 @@ return [
 	['PUT', '/api/users/{id}', [UserController::class, 'update']],
 	['DELETE', '/api/users/{id}', [UserController::class, 'destroy']],
 
-	['POST', 'api/login', [AuthController::class, 'login']],
+	['POST', '/api/login', [AuthController::class, 'login']],
 ];
