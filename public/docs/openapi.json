@@ -3,11 +3,15 @@
   "info": {
     "title": "PHP REST API Pro",
     "version": "1.0.0",
-    "description": "API de usuários desenvolvida em PHP"
+    "description": "API de usuários desenvolvida em PHP",
+    "contact": {
+      "name": "XxZeroxX",
+      "url": "https://github.com/AntonioCarioca"
+    }
   },
   "servers": [
     {
-      "url": "https://phpapipro.dev.localhost"
+      "url": "https://phpapipro.dev.localhost/api"
     }
   ],
   "security": [
@@ -22,11 +26,11 @@
     },
     {
       "name": "Auth",
-      "description": "Autenticação"
+      "description": "🔐 Autenticação e geração de JWT"
     }
   ],
   "paths": {
-    "/api/users": {
+    "/users": {
       "get": {
         "tags": ["Users"],
         "summary": "Listar usuários",
@@ -118,7 +122,7 @@
         }
       }
     },
-    "/api/users/{id}": {
+    "/users/{id}": {
       "get": {
         "tags": ["Users"],
         "summary": "Buscar usuário por ID",
@@ -290,7 +294,7 @@
         }
       }
     },
-    "/api/login": {
+    "/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Login do usuário",
