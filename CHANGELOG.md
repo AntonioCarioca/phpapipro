@@ -1,3 +1,62 @@
+
+## [2.0.0] - 2026-05-14
+
+
+
+### Added
+
+
+- Add serviço de JWT
+
+- Add AuthController para para autentificação via API
+
+- Add Middleware para JWT
+
+
+
+### Changed
+
+
+- Add metodo findByEmail ao Model User
+
+- Substituição do AuthMiddleware para JwtMiddleware
+
+- Use de Response e Request na classe AuthController
+
+
+
+### Chores
+
+
+- Atualizacao nos arquivos de criacao de changelog automatico
+
+
+
+### Documentation
+
+
+- Update changelog for v1.0.0
+
+- Instalação do pacote firebase/php-jwt no composer.json
+
+- Add JWT variaveis no .env.example
+
+- Add campo password no schema UserCreate
+
+- Add Seção de Auth no swegger
+
+- Update openapi.json
+
+- Update openapi.json
+
+
+
+### Fixed
+
+
+- Correção na uri do metodo login do AuthController
+
+
 ## [1.0.0] - 2026-05-04
 
 
