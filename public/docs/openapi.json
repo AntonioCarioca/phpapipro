@@ -22,7 +22,7 @@
     },
     {
       "name": "Auth",
-      "description": "Gerenciamento de usuários"
+      "description": "Autenticação"
     }
   ],
   "paths": {
@@ -30,9 +30,36 @@
       "get": {
         "tags": ["Users"],
         "summary": "Listar usuários",
+        "description": "Retorna todos os usuários",
         "responses": {
           "200": {
-            "description": "Lista de usuários"
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "example":
+                  {
+                    "success": true,
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Antonio",
+                        "email": "antonio@email.com"
+                      }
+                    ]
+                  }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Token inválido, ausente ou expirado."
+                }
+              }
+            }
           }
         }
       },
@@ -51,7 +78,42 @@
         },
         "responses": {
           "201": {
-            "description": "Usuário criado"
+            "description": "Usuário criado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Usuário criado com sucesso.",
+                  "data": {
+                    "name": "teste",
+                    "email": "teste@email.com",
+                    "password": "teste123"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Dados invalidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Dados inválidos."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Token inválido, ausente ou expirado."
+                }
+              }
+            }
           }
         }
       }
@@ -70,8 +132,42 @@
         ],
         "responses": {
           "200": {
-            "description": "Usuário encontrado"
-          }
+            "description": "Usuário encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": 1,
+                    "name": "example",
+                    "email": "example@email.com"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Usuário não encontrado."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Token inválido, ausente ou expirado."
+                }
+              }
+            }
+          }          
         }
       },
       "put": {
@@ -96,7 +192,53 @@
         },
         "responses": {
           "200": {
-            "description": "Usuário atualizado"
+            "description": "Usuário atualizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Usuário atualizado com sucesso.",
+                  "data": {
+                    "id": 1,
+                    "name": "update",
+                    "email": "update@email.com"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Usuário não encontrado."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Dados inválidos."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Token inválido, ausente ou expirado."
+                }
+              }
+            }
           }
         }
       },
@@ -113,7 +255,37 @@
         ],
         "responses": {
           "200": {
-            "description": "Usuário deletado"
+            "description": "Usuário Deletado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Usuário removido com sucesso.",
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Usuário não encontrado."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Token inválido, ausente ou expirado."
+                }
+              }
+            }
           }
         }
       }
@@ -122,6 +294,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Login do usuário",
+        "description": "Retorna um JWT válido",
         "security": [],
         "requestBody": {
           "required": true,
@@ -139,7 +312,31 @@
         },
         "responses": {
           "200": {
-            "description": "JWT Token"
+            "description": "Login realizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "token": "eyJhbGciOiJIUzI1NiIs...",
+                  "user": {
+                    "id": 1,
+                    "name": "Demo User",
+                    "email": "demo@api.com"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Credenciais inválidas"
+                }
+              }
+            }
           }
         }
       }
@@ -176,7 +373,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Insira seu JWT"
       }
     }
   }
