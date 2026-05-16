@@ -35,6 +35,16 @@
         "tags": ["Users"],
         "summary": "Listar usuários",
         "description": "Retorna todos os usuários",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "scheme": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Lista de usuários",
