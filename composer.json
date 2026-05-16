@@ -14,5 +14,9 @@
         {
             "App\\": "app/"
         }
+    },
+    "scripts":
+    {
+        "migrate": "php scripts/migrate.php"
     }
 }
