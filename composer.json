@@ -17,6 +17,7 @@
     },
     "scripts":
     {
-        "migrate": "php scripts/migrate.php"
+        "migrate": "php scripts/migrate.php",
+        "seed": "php scripts/seed.php"
     }
 }
