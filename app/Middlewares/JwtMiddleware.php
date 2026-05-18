@@ -3,6 +3,7 @@
 namespace App\Middlewares;
 
 use App\Services\JwtService;
+use App\Core\Response;
 use Exception;
 
 /**
@@ -60,14 +61,10 @@ class JwtMiddleware
     private static function unauthorized(): void
     {
         // Define o status HTTP como 401 Unauthorized
-        http_response_code(401);
-        header('Content-Type: application/json');
-
-        echo json_encode([
+        Response::json([
             'success' => false,
             'message' => 'Token inválido, ausente ou expirado.'
-        ]);
-
+        ], 401);
         // Encerra a execução para que o Controller não seja alcançado
         exit;
     }
