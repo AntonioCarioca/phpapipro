@@ -335,7 +335,8 @@
                   "user": {
                     "id": 1,
                     "name": "Demo User",
-                    "email": "demo@api.com"
+                    "email": "demo@api.com",
+                    "role": "admin"
                   }
                 }
               }

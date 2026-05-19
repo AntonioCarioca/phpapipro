@@ -66,7 +66,7 @@ class User
     {
         $pdo = Database::connect();
         // Nota: Para o login, talvez você precise selecionar a 'password' aqui também.
-        $stmt = $pdo->prepare('SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1');
+        $stmt = $pdo->prepare('SELECT id, name, email, password, role FROM users WHERE email = :email LIMIT 1');
         $stmt->execute(['email' => $email]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);

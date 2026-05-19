@@ -41,7 +41,8 @@ class JwtService
             'exp'  => time() + ($_ENV['JWT_EXPIRE'] ?? 3600),
             'user' => [
                 'id'    => $user['id'],
-                'email' => $user['email']
+                'email' => $user['email'],
+                'role'  => $user['role']
             ]
         ];
 

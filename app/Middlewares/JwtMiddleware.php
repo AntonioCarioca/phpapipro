@@ -46,7 +46,9 @@ class JwtMiddleware
              * Se o token estiver expirado ou a assinatura for inválida, 
              * uma Exception será lançada.
              */
-            JwtService::validate($token);
+            $decoded = JwtService::validate($token);
+
+            $_REQUEST['auth_user'] = $decoded;
         } catch (Exception $e) {
             // Log do erro pode ser adicionado aqui para debug: error_log($e->getMessage());
             self::unauthorized();

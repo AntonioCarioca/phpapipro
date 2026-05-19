@@ -82,7 +82,6 @@ try {
             echo "   [Sucesso] $migration aplicada.\n";
             $count++;
         } catch (Exception $e) {
-            $pdo->rollBack();
             echo "   [Erro] Falha ao aplicar a migração: " . $migration . "\n";
             echo "   Motivo: " . $e->getMessage() . "\n";
             echo "   Processo interrompido.\n";
