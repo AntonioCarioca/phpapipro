@@ -1,6 +1,7 @@
 composer.phar
 composer.lock
 .env
+.phpunit.result.cache
 /vendor/
 /docker/nginx/certs/
 
