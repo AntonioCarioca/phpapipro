@@ -4,11 +4,11 @@ namespace App\Core;
 
 /**
  * Motor de Roteamento Avançado.
- * 
+ *
  * Esta classe gerencia o ciclo de vida das rotas, comparando a requisição atual
- * com as rotas registradas e despachando para o Controller responsável, 
+ * com as rotas registradas e despachando para o Controller responsável,
  * injetando automaticamente o objeto Request e parâmetros da URL.
- * 
+ *
  * @package App\Core
  * @author XxZeroxX
  * @version 2.0.0
@@ -28,7 +28,7 @@ class Router
 
     /**
      * Resolve a rota baseada no objeto Request e executa o handler.
-     * 
+     *
      * @param Request $request Instância da requisição atual contendo método e URI.
      * @return mixed O retorno do método executado no Controller.
      */
@@ -54,7 +54,7 @@ class Router
         }
 
         /**
-         * Fallback: Caso nenhuma rota coincida, utiliza o helper de 
+         * Fallback: Caso nenhuma rota coincida, utiliza o helper de
          * Response para retornar um erro JSON padronizado.
          */
         Response::json(['error' => 'Not Found'], 404);
@@ -62,7 +62,7 @@ class Router
 
     /**
      * Compara a URI da rota com a URI atual usando Expressões Regulares.
-     * 
+     *
      * @param string $routeUri Padrão da rota (ex: /user/{id}).
      * @param string $currentUri URI vinda do navegador.
      * @return array|false Retorna os valores dos parâmetros ou false.
@@ -84,7 +84,7 @@ class Router
 
     /**
      * Instancia o Controller e invoca o método passando Request e Parâmetros.
-     * 
+     *
      * @param array $handler Array com [ClasseController, NomeMetodo].
      * @param Request $request Objeto de requisição para injeção de dependência.
      * @param array $params Argumentos extraídos da URL.

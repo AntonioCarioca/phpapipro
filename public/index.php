@@ -1,15 +1,15 @@
 <?php
 
+/**
+ * Entry Point da API (index.php).
+ *
+ * Este arquivo é o "maestro" da aplicação. Todas as requisições HTTP
+ * vindas do servidor (Apache/Nginx) obrigatoriamente passam por aqui.
+ */
+
 use App\Core\Env;
 use App\Core\Router;
 use App\Core\Request;
-
-/**
- * Entry Point da API (index.php).
- * 
- * Este arquivo é o "maestro" da aplicação. Todas as requisições HTTP 
- * vindas do servidor (Apache/Nginx) obrigatoriamente passam por aqui.
- */
 
 // 1. Inicializa o Autoload do Composer para carregar todas as classes automaticamente.
 require __DIR__ . '/../vendor/autoload.php';

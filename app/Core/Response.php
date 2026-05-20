@@ -4,10 +4,10 @@ namespace App\Core;
 
 /**
  * Manipulador de Respostas HTTP.
- * 
+ *
  * Esta classe facilita o envio de dados para o cliente, gerenciando
  * os códigos de status HTTP e a formatação adequada do conteúdo.
- * 
+ *
  * @package App
  * @author XxZeroxX
  * @version 1.0.0
@@ -16,10 +16,10 @@ class Response
 {
     /**
      * Envia uma resposta no formato JSON.
-     * 
+     *
      * Define o código de status da resposta, configura o cabeçalho de conteúdo
      * para JSON com codificação UTF-8 e renderiza os dados fornecidos.
-     * 
+     *
      * @param array $data O conjunto de dados que será convertido em JSON.
      * @param int $status O código de status HTTP (padrão 200 OK).
      * @return void

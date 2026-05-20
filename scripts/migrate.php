@@ -25,7 +25,7 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
-    
+
     $pdo = new PDO($dsn, $user, $pass, $options);
     echo "• Conectado ao banco de dados com sucesso!\n";
 
@@ -47,7 +47,7 @@ try {
 
     // Escaneia e ordena os arquivos (garante a ordem cronológica/alfabética)
     $files = scandir($dirMigrations);
-    $migrationsInFolder = array_filter($files, function($file) {
+    $migrationsInFolder = array_filter($files, function ($file) {
         return pathinfo($file, PATHINFO_EXTENSION) === 'sql';
     });
     sort($migrationsInFolder);
@@ -66,7 +66,7 @@ try {
 
         // Lê o conteúdo do arquivo SQL
         $sql = file_get_contents($dirMigrations . '/' . $migration);
-        
+
         if (trim($sql) === '') {
             echo "   [Aviso] Arquivo vazio, pulando.\n";
             continue;
@@ -94,7 +94,6 @@ try {
     } else {
         echo "\n• Migrações finalizadas com sucesso! Total aplicadas: $count\n";
     }
-
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }

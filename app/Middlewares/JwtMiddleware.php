@@ -8,17 +8,17 @@ use Exception;
 
 /**
  * Middleware de Autenticação JWT.
- * 
+ *
  * Responsável por interceptar a requisição, extrair o Token Bearer dos cabeçalhos
  * e validar a autenticidade do usuário antes que o Controller seja executado.
- * 
+ *
  * @package App\Middlewares
  */
 class JwtMiddleware
 {
     /**
      * Processa a validação do token.
-     * 
+     *
      * @return void
      */
     public static function handle(): void
@@ -43,7 +43,7 @@ class JwtMiddleware
         try {
             /**
              * Chama o serviço de validação.
-             * Se o token estiver expirado ou a assinatura for inválida, 
+             * Se o token estiver expirado ou a assinatura for inválida,
              * uma Exception será lançada.
              */
             $decoded = JwtService::validate($token);
@@ -57,7 +57,7 @@ class JwtMiddleware
 
     /**
      * Interrompe a requisição e retorna erro 401.
-     * 
+     *
      * @return void
      */
     private static function unauthorized(): void

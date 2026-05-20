@@ -7,10 +7,10 @@ use PDO;
 
 /**
  * Modelo de Usuário para operações de API e Listagem.
- * 
+ *
  * Esta classe fornece métodos estáticos para manipulação da tabela 'users',
  * incluindo lógica de paginação, busca individual, criação, atualização e remoção.
- * 
+ *
  * @package App\Models
  * @author XxZeroxX
  * @version 1.0.1
@@ -19,7 +19,7 @@ class User
 {
     /**
      * Recupera uma lista paginada de usuários.
-     * 
+     *
      * @param int $page O número da página atual (inicia em 1).
      * @param int $perPage Quantidade de registros por página.
      * @return array Lista de usuários como arrays associativos.
@@ -28,9 +28,9 @@ class User
     {
         $offset = ($page - 1) * $perPage;
         $pdo = Database::connect();
-        
+
         $stmt = $pdo->prepare('SELECT id, name, email FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset');
-        
+
         $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -40,7 +40,7 @@ class User
 
     /**
      * Busca um usuário específico pelo ID.
-     * 
+     *
      * @param int $id Identificador primário do usuário.
      * @return array|null Dados do usuário (sem senha) ou null.
      */
@@ -56,9 +56,9 @@ class User
 
     /**
      * Localiza um usuário pelo endereço de e-mail.
-     * 
+     *
      * Útil para validação de login e checagem de e-mails duplicados.
-     * 
+     *
      * @param string $email E-mail do usuário.
      * @return array|null Retorna os dados do usuário ou null.
      */
@@ -75,7 +75,7 @@ class User
 
     /**
      * Insere um novo usuário e criptografa a senha automaticamente.
-     * 
+     *
      * @param array $data Mapa contendo 'name', 'email' e 'password'.
      * @return bool Sucesso ou falha na inserção.
      */
@@ -83,9 +83,9 @@ class User
     {
         $pdo = Database::connect();
         $stmt = $pdo->prepare('INSERT INTO users (name, email, password) VALUES (:name, :email, :password)');
-        
+
         return $stmt->execute([
-            'name'     => $data['name'], 
+            'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => password_hash($data['password'], PASSWORD_DEFAULT)
         ]);
@@ -93,7 +93,7 @@ class User
 
     /**
      * Atualiza os dados de nome e e-mail de um usuário.
-     * 
+     *
      * @param int $id ID do usuário.
      * @param array $data Novos dados ('name' e 'email').
      * @return bool Sucesso ou falha na atualização.
@@ -102,17 +102,17 @@ class User
     {
         $pdo = Database::connect();
         $stmt = $pdo->prepare('UPDATE users SET name = :name, email = :email WHERE id = :id');
-        
+
         return $stmt->execute([
-            'id'    => $id, 
-            'name'  => $data['name'], 
+            'id'    => $id,
+            'name'  => $data['name'],
             'email' => $data['email']
         ]);
     }
 
     /**
      * Remove um usuário permanentemente.
-     * 
+     *
      * @param int $id ID do registro.
      * @return bool Sucesso ou falha na exclusão.
      */
@@ -120,7 +120,7 @@ class User
     {
         $pdo = Database::connect();
         $stmt = $pdo->prepare('DELETE FROM users WHERE id = :id');
-        
+
         return $stmt->execute(['id' => $id]);
     }
 }

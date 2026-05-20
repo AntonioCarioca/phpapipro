@@ -36,7 +36,7 @@ try {
 
     // 4. Escaneia a pasta e filtra apenas arquivos .sql
     $files = scandir($seedersDir);
-    $sqlFiles = array_filter($files, function($file) {
+    $sqlFiles = array_filter($files, function ($file) {
         return pathinfo($file, PATHINFO_EXTENSION) === 'sql';
     });
 
@@ -68,7 +68,6 @@ try {
     }
 
     echo "---\n🚀 Todos os seeders foram executados com sucesso!\n";
-
 } catch (\PDOException $e) {
     echo "\n❌ ERRO durante o processo: " . $e->getMessage() . "\n";
     exit(1);

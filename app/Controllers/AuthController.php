@@ -9,10 +9,10 @@ use App\Core\Request;
 
 /**
  * Controlador de Autenticação via API.
- * 
- * Gerencia o ciclo de vida da autenticação stateless, transformando 
+ *
+ * Gerencia o ciclo de vida da autenticação stateless, transformando
  * credenciais válidas em tokens JWT assinados.
- * 
+ *
  * @package App\Controllers
  * @author XxZeroxX
  * @version 1.0.1
@@ -21,10 +21,10 @@ class AuthController
 {
     /**
      * Endpoint de Autenticação (Login).
-     * 
-     * Recebe e-mail e senha, valida as credenciais contra o hash no banco 
+     *
+     * Recebe e-mail e senha, valida as credenciais contra o hash no banco
      * de dados e retorna um token de acesso para uso em rotas protegidas.
-     * 
+     *
      * @param Request $request Objeto de requisição injetado automaticamente pelo Router.
      * @return void
      */
@@ -42,7 +42,7 @@ class AuthController
          */
         if (empty($data['email']) || empty($data['password'])) {
             Response::json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Email e senha obrigatórios'
             ], 422);
             return;
@@ -57,12 +57,12 @@ class AuthController
 
         /**
          * 4. Validação de Segurança (HTTP 401):
-         * Se o usuário não existir ou o password_verify falhar, retornamos 
+         * Se o usuário não existir ou o password_verify falhar, retornamos
          * um erro genérico para dificultar ataques de força bruta.
          */
         if (!$user || !password_verify($data['password'], $user['password'])) {
             Response::json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Credenciais inválidas'
             ], 401);
             return;
@@ -70,7 +70,7 @@ class AuthController
 
         /**
          * 5. Emissão do Token (JWT):
-         * Com as credenciais confirmadas, geramos a assinatura digital que 
+         * Com as credenciais confirmadas, geramos a assinatura digital que
          * identifica o usuário nas próximas requisições (Stateless).
          */
         $token = JwtService::generate($user);

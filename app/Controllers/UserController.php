@@ -10,10 +10,10 @@ use App\Core\Request;
 
 /**
  * Controlador de Recursos de Usuário (API RESTful).
- * 
+ *
  * Implementa o padrão CRUD para a entidade de usuários, utilizando
  * autenticação via Token Bearer e comunicação exclusivamente via JSON.
- * 
+ *
  * @package App\Controllers
  * @author XxZeroxX
  * @version 2.0.0
@@ -37,9 +37,9 @@ class UserController
 
     /**
      * Lista todos os usuários com suporte a paginação.
-     * 
+     *
      * Protegido por AuthMiddleware. Aceita parâmetros 'page' e 'per_page' via URL.
-     * 
+     *
      * @return void
      */
     public function index(): void
@@ -53,7 +53,7 @@ class UserController
             'success' => true,
             'data'    => User::all($page, $perPage),
             'meta'    => [
-                'page'     => $page, 
+                'page'     => $page,
                 'per_page' => $perPage
             ]
         ]);
@@ -61,7 +61,7 @@ class UserController
 
     /**
      * Busca um usuário pelo ID.
-     * 
+     *
      * @param Request $request Objeto injetado pelo Router.
      * @param int $id Identificador vindo da URL dinâmica.
      * @return void
@@ -81,9 +81,9 @@ class UserController
 
     /**
      * Cria um novo registro de usuário.
-     * 
+     *
      * Recebe dados via JSON bruto no corpo da requisição.
-     * 
+     *
      * @param Request $request
      * @return void
      */
@@ -111,7 +111,7 @@ class UserController
 
     /**
      * Atualiza um usuário existente.
-     * 
+     *
      * @param Request $request
      * @param int $id
      * @return void
@@ -143,14 +143,14 @@ class UserController
 
     /**
      * Remove um usuário do banco de dados.
-     * 
+     *
      * @param Request $request
      * @param int $id
      * @return void
      */
     public function destroy(Request $request, int $id): void
     {
-        
+
         if (! User::find($id)) {
             Response::json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
             return;
@@ -162,14 +162,14 @@ class UserController
 
     /**
      * Helper interno para validação de campos obrigatórios.
-     * 
+     *
      * @param array $data
      * @return bool
      */
     private function isValid(array $data): bool
     {
-        return ! empty($data['name']) && 
-               ! empty($data['email']) && 
+        return ! empty($data['name']) &&
+               ! empty($data['email']) &&
                filter_var($data['email'], FILTER_VALIDATE_EMAIL);
     }
 }

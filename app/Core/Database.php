@@ -19,15 +19,15 @@ class Database
     /**
      * Estabelece uma conexão com o banco de dados via PDO.
      *
-     * O método extrai as credenciais da superglobal $_ENV e configura o 
-     * comportamento do PDO para lançar exceções em caso de erros e 
+     * O método extrai as credenciais da superglobal $_ENV e configura o
+     * comportamento do PDO para lançar exceções em caso de erros e
      * retornar resultados como arrays associativos por padrão.
      *
      * @return PDO Uma instância configurada do objeto PDO.
      * @throws PDOException Caso a tentativa de conexão falhe.
      */
     public static function connect(): PDO
-    {   
+    {
         // Recupera as configurações das variáveis de ambiente com fallbacks seguros
         $connection = $_ENV['DB_CONNECTION'] ?? 'mysql';
         $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
@@ -53,5 +53,5 @@ class Database
 
         // Retorna conexão PDO
         return new PDO($dsn, $user, $pass, $options);
-    } 
+    }
 }
