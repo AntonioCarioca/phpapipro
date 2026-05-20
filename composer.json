@@ -18,6 +18,15 @@
     "scripts":
     {
         "migrate": "php scripts/migrate.php",
-        "seed": "php scripts/seed.php"
+        "seed": "php scripts/seed.php",
+        "test": "phpunit",
+        "analyse": "phpstan analyse app tests scripts public/index.php",
+        "cs": "phpcs app tests scripts public/index.php",
+        "cs:fix": "phpcbf app tests scripts public/index.php"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.1",
+        "phpstan/phpstan": "^2.1",
+        "squizlabs/php_codesniffer": "^4.0"
     }
 }
