@@ -2,10 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
-use App\Services\JwtService;
 use App\Core\Response;
 use App\Core\Request;
+use App\Models\User;
+use App\Services\JwtService;
+use App\Services\Logger;
 
 /**
  * Controlador de Autenticação via API.
@@ -61,6 +62,13 @@ class AuthController
          * um erro genérico para dificultar ataques de força bruta.
          */
         if (!$user || !password_verify($data['password'], $user['password'])) {
+            Logger::warning(
+                'Tentativa de login inválida',
+                [
+                    'email' => $data['email'],
+                    'ip' => $_SERVER['REMOTE_ADDR']
+                ]
+            );
             Response::json([
                 'success' => false,
                 'message' => 'Credenciais inválidas'
@@ -79,6 +87,13 @@ class AuthController
          * 6. Resposta Final (HTTP 200):
          * Retornamos o token e dados básicos (não sensíveis) do usuário.
          */
+        Logger::info(
+            'Login realizado',
+            [
+                'user_id' => $user['id'],
+                'email' => $user['email']
+            ]
+        );
         Response::json([
             'success' => true,
             'token'   => $token,
